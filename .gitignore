@@ -1,0 +1,21 @@
+# Build Artifacts
+build/
+*.o
+*.dSYM/
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS Finder metadata
+Icon?
+-_*
+
+# Vim temp files
+*~
+*.swp
+*.swo
+
+#ignore logs
+*.log
