@@ -4,7 +4,8 @@ CC      = clang
 FLAGS   = -fobjc-arc -fmodules -framework Cocoa -mmacosx-version-min=13.0
 
 SOURCES = main.m \
-          AppDelegate.m
+          AppDelegate.m \
+		  NotchWindow.m
 
 all:
 	mkdir -p $(BUILD)/$(APP).app/Contents/MacOS

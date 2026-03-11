@@ -1,9 +1,13 @@
 #import "AppDelegate.h"
+#import "NotchWindow.h"
 
-@implementation AppDelegate
+@implementation AppDelegate {
+    NotchWindow* _notchWindow;
+}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
-    NSLog(@"DynamicNotch launched");
+   _notchWindow = [[NotchWindow alloc] init];
+   [_notchWindow show];
 }
 
 @end
