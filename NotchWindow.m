@@ -15,10 +15,28 @@
 
 
 - (void)drawRect:(NSRect)dirtyRect{
-    NSBezierPath* path = [NSBezierPath
-        bezierPathWithRoundedRect:self.bounds
-            xRadius:CORNER_RADIUS
-            yRadius:CORNER_RADIUS];
+    NSRect bounds = self.bounds;
+    NSBezierPath* path = [NSBezierPath bezierPath];
+
+    [path moveToPoint:NSMakePoint(NSMinX(bounds), NSMaxY(bounds))];
+    [path lineToPoint:NSMakePoint(NSMaxX(bounds), NSMaxY(bounds))];
+    [path lineToPoint:NSMakePoint(NSMaxX(bounds), NSMinY(bounds) + CORNER_RADIUS)]; 
+
+    [path appendBezierPathWithArcFromPoint:
+        NSMakePoint(NSMaxX(bounds), NSMinY(bounds))
+        toPoint:NSMakePoint(NSMaxX(bounds) - CORNER_RADIUS, NSMinY(bounds))
+        radius:CORNER_RADIUS];
+
+    [path lineToPoint:NSMakePoint(NSMinX(bounds) + CORNER_RADIUS, NSMinY(bounds))];
+
+    [path appendBezierPathWithArcFromPoint:
+        NSMakePoint(NSMinX(bounds), NSMinY(bounds))
+        toPoint:NSMakePoint(NSMinX(bounds), NSMinY(bounds) + CORNER_RADIUS)
+        radius:CORNER_RADIUS]; 
+
+    [path lineToPoint:NSMakePoint(NSMinX(bounds), NSMaxY(bounds))];
+
+    [path closePath];
     [[NSColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.97] setFill];
     [path fill]; 
 }
