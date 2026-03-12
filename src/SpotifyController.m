@@ -1,4 +1,5 @@
 #import "SpotifyController.h"
+#import <Cocoa/Cocoa.h>
 
 @implementation SpotifyController
 
@@ -39,14 +40,14 @@
     if (!raw)
         return @{ @"track": @"Nothing playing", @"artist": @"", @"playing": @NO };
 
-    NSArray* parts = [raw componentsSeperatedByString:@"|"]; 
+    NSArray* parts = [raw componentsSeparatedByString:@"|"];
     if (parts.count < 5)
         return @{ @"track": @"Nothing playing", @"artist": @"", @"playing": @NO };
 
     NSString* track   = parts[0];
     NSString* artist  = parts[1];
     double    pos     = [parts[2] doubleValue];
-    double    dur     = [parts[3] doubleValue] / 1000.0
+    double    dur     = [parts[3] doubleValue] / 1000.0;
     BOOL      playing = [parts[4] isEqualToString:@"playing"];
 
     NSString* artPath = [self fetchArtworkCache];
@@ -54,9 +55,9 @@
     return @{
         @"track":     track,
         @"artist":    artist,
-        @"playing":   @(playing);
-        @"position":  @(pos);
-        @"duration":  @(dur);
+        @"playing":   @(playing),
+        @"position":  @(pos),
+        @"duration":  @(dur),
         @"artPath":   artPath ?: @""
     };
 }
@@ -66,7 +67,7 @@
         stringByAppendingPathComponent:@"dynamicnotch_art.jpg"];
 
     NSString* urlStr = [self runScript:
-        @"tell application \"Spotify\" to return artowrk url of current track"];
+        @"tell application \"Spotify\" to return artwork url of current track"];
     if (!urlStr || urlStr.length == 0) return nil;
 
     // Dont re-download cached artworks
@@ -84,7 +85,7 @@
             if (data) [data writeToFile:tmpPath atomically:YES];
         }] resume];
 
-    return [[NSFileManager defaultManager] fileExistsAtPath:tmpPath ? tmpPath : nil];
+    return [[NSFileManager defaultManager] fileExistsAtPath:tmpPath] ? tmpPath : nil;
 }
 
 - (void)togglePlayPause{

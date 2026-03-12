@@ -1,4 +1,5 @@
 #import "NotchWindow.h"
+#import "NotchContentView.h"
 
 #define NOTCH_WIDTH_CLOSED  200
 #define NOTCH_WIDTH_OPEN    350
@@ -47,14 +48,27 @@
 @interface NotchWindow()
 
 @property (strong) NSWindow* window;
+@property (strong) NotchContentView* contentView;
+@property (strong) SpotifyController* spotify;
 @property (strong) NSTimer*  collapseTimer;
+@property (strong) NSTimer* refreshTimer; 
 @property BOOL isExpanded;
-@property BOOL isAnimating; 
+@property BOOL isAnimating;
+
 
 @end
 
 
 @implementation NotchWindow
+
+- (instancetype)initWithSpotify:(SpotifyController *)spotify{
+    self = [super init]; 
+    if (self) {
+        self.spotify = spotify;
+        [self setup];
+    }
+    return self; 
+}
 
 - (void)expand {
     if (self.isExpanded || self.isAnimating) return;
@@ -73,6 +87,7 @@
     } completionHandler:^{
         self.isExpanded = YES;
         self.isAnimating = NO;
+        [self.contentView refresh]; 
     }];
 }
 
@@ -184,16 +199,25 @@
         NSWindowCollectionBehaviorStationary |
         NSWindowCollectionBehaviorIgnoresCycle];
 
-    NotchView* view = [[NotchView alloc] initWithFrame:
-        NSMakeRect(0, 0, NOTCH_WIDTH_CLOSED, NOTCH_HEIGHT_CLOSED)];
-    [self.window setContentView:view];
+    self.contentView = [[NotchContentView alloc]
+        initWithFrame:NSMakeRect(0, 0, NOTCH_WIDTH_CLOSED, NOTCH_HEIGHT_CLOSED)
+            spotify:self.spotify];
+    [self.window setContentView:self.contentView];
     [self startMouseMonitoring];
 }
 
 - (void)show{
     [self.window orderFrontRegardless];
-
+    self.refreshTimer = [NSTimer scheduledTimerWithTimeInterval:3.0
+                        target:self
+                        selector:@selector(refresh)
+                        userInfo:nil
+                        repeats:YES];
     
+}
+
+- (void)refresh{
+    [self.contentView refresh]; 
 }
 
 @end
